@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MPSU SIS - Faculty Portal</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #1a237e;
+            --secondary-color: #283593;
+            --accent-color: #5c6bc0;
+            --light-bg: #f8f9fa;
+            --dark-text: #212529;
+            --light-text: #6c757d;
+        }
+
+        body {
+            background-color: var(--light-bg);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--dark-text);
+            padding-top: 70px;
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .navbar-brand {
+            font-weight: 600;
+        }
+
+        .navbar-logo {
+            height: 30px;
+        }
+
+        .sidebar {
+            background-color: white;
+            border-right: 1px solid #dee2e6;
+            min-height: calc(100vh - 70px);
+            padding: 0;
+            box-shadow: 0 0 10px rgba(0,0,0,0.05);
+        }
+
+        .sidebar-content {
+            padding: 20px;
+        }
+
+        .neon-text {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .content-section {
+            padding: 20px;
+            display: none;
+        }
+
+        .dashboard-header {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+        }
+
+        .stats-card {
+            border: none;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            transition: transform 0.3s;
+            margin-bottom: 20px;
+        }
+
+        .stats-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature-icon {
+            font-size: 24px;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .stats-number {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .stats-label {
+            color: var(--light-text);
+            font-size: 14px;
+        }
+
+        .dashboard-card {
+            border: none;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+        }
+
+        .card-header {
+            background-color: white;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--secondary-color);
+            border-color: var(--secondary-color);
+        }
+
+        .table th {
+            background-color: var(--light-bg);
+            color: var(--primary-color);
+        }
+
+        .badge {
+            font-size: 12px;
+            padding: 5px 10px;
+        }
+
+        /* Active section styling */
+        #dashboard-section {
+            display: block;
+        }
+
+        .nav-link.active {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+        }
+
+        .student-count {
+            font-size: 0.875rem;
+            color: var(--light-text);
+        }
+
+        .grade-excellent { color: #28a745; font-weight: bold; }
+        .grade-very-good { color: #20c997; font-weight: bold; }
+        .grade-good { color: #ffc107; font-weight: bold; }
+        .grade-satisfactory { color: #fd7e14; font-weight: bold; }
+        .grade-poor { color: #dc3545; font-weight: bold; }
+    </style>
+</head>
+<body class="body-home">
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <img src="mpsu.png" alt="MPSU Logo" class="navbar-logo me-2">MPSU SIS - Faculty
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#dashboard" onclick="showSection('dashboard')">
+                            <i class="fas fa-tachometer-alt me-1"></i>Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#students" onclick="showSection('students')">
+                            <i class="fas fa-graduation-cap me-1"></i>Students
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#grades" onclick="showSection('grades')">
+                            <i class="fas fa-chart-line me-1"></i>Grades
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#profile" onclick="showSection('profile')">
+                            <i class="fas fa-user me-1"></i>Profile
+                        </a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-user me-1"></i><span id="teacherName">Faculty</span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#" onclick="showProfileModal()"><i class="fas fa-user me-2"></i>View Profile</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#" id="logoutBtn"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-2 sidebar">
+                <div class="sidebar-content">
+                    <h6 class="neon-text mb-3">Quick Stats</h6>
+                    <div class="mb-3">
+                        <small class="text-muted d-block">My Courses</small>
+                        <div class="h4 neon-text" id="myCoursesCount">6</div>
+                    </div>
+                    <div class="mb-3">
+                        <small class="text-muted d-block">Total Students</small>
+                        <div class="h4 neon-text" id="myStudentsCount">185</div>
+                    </div>
+                    <div class="mb-3">
+                        <small class="text-muted d-block">Pending Grades</small>
+                        <div class="h4 text-warning" id="pendingGradesCount">23</div>
+                    </div>
+                    <div class="border-top pt-3">
+                        <h6 class="neon-text mb-2">Current Semester</h6>
+                        <small class="text-muted" id="currentSemester">1st Semester 2024</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content Area -->
+            <div class="col-md-10">
+                <!-- Dashboard Section -->
+                <div id="dashboard-section" class="content-section">
+                    <div class="dashboard-header">
+                        <h2><i class="fas fa-tachometer-alt me-2"></i>Faculty Portal</h2>
+                        <p class="mb-0">Welcome back! Here's an overview of your teaching activities.</p>
+                    </div>
+
+                    <!-- Statistics Cards -->
+                    <div class="row mb-4">
+                        <div class="col-md-3 mb-3">
+                            <div class="card stats-card">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-book feature-icon"></i>
+                                    <div class="stats-number" id="coursesCount">6</div>
+                                    <div class="stats-label">My Courses</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="card stats-card">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-graduation-cap feature-icon"></i>
+                                    <div class="stats-number" id="studentsCount">185</div>
+                                    <div class="stats-label">Students</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="card stats-card">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-chart-line feature-icon"></i>
+                                    <div class="stats-number" id="gradesCount">162</div>
+                                    <div class="stats-label">Grades Entered</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="card stats-card">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-calendar-check feature-icon"></i>
+                                    <div class="stats-number" id="classesCount">4</div>
+                                    <div class="stats-label">Classes Today</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Activities -->
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="card dashboard-card">
+                                <div class="card-header">
+                                    <h5 class="mb-0 neon-text"><i class="fas fa-bell me-2"></i>Recent Activities</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="list-group">
+                                        <div class="list-group-item">
+                                            <div class="d-flex w-100 justify-content-between">
+                                                <h6 class="mb-1">Grades Submitted</h6>
+                                                <small class="text-muted">2 hours ago</small>
+                                            </div>
+                                            <p class="mb-1">Submitted final grades for IT 301 - Web Development</p>
+                                        </div>
+                                        <div class="list-group-item">
+                                            <div class="d-flex w-100 justify-content-between">
+                                                <h6 class="mb-1">New Student Enrollment</h6>
+                                                <small class="text-muted">1 day ago</small>
+                                            </div>
+                                            <p class="mb-1">Maria Santos enrolled in IT 305 - Database Systems</p>
+                                        </div>
+                                        <div class="list-group-item">
+                                            <div class="d-flex w-100 justify-content-between">
+                                                <h6 class="mb-1">Assignment Posted</h6>
+                                                <small class="text-muted">2 days ago</small>
+                                            </div>
+                                            <p class="mb-1">Posted new assignment for CS 201 - Data Structures</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card dashboard-card">
+                                <div class="card-header">
+                                    <h5 class="mb-0 neon-text"><i class="fas fa-exclamation-circle me-2"></i>Pending Tasks</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="list-group">
+                                        <div class="list-group-item">
+                                            <h6 class="mb-1">Enter final grades</h6>
+                                            <small class="text-muted">IT 302 - Mobile App Development</small>
+                                        </div>
+                                        <div class="list-group-item">
+                                            <h6 class="mb-1">Update course materials</h6>
+                                            <small class="text-muted">IT 301 - Web Development</small>
+                                        </div>
+                                        <div class="list-group-item">
+                                            <h6 class="mb-1">Submit grade reports</h6>
+                                            <small class="text-muted">All courses</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Students Section -->
+                <div id="students-section" class="content-section" style="display: none;">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h2><i class="fas fa-graduation-cap me-2"></i>My Students</h2>
+                        <div>
+                            <select class="form-select d-inline-block w-auto me-2" id="courseFilter" onchange="filterStudents()">
+                                <option value="">All Courses</option>
+                                <option value="IT301">IT 301 - Web Development <span class="student-count">(30 students)</span></option>
+                                <option value="IT305">IT 305 - Database Systems <span class="student-count">(28 students)</span></option>
+                                <option value="CS201">CS 201 - Data Structures <span class="student-count">(32 students)</span></option>
+                                <option value="IT302">IT 302 - Mobile App Development <span class="student-count">(30 students)</span></option>
+                                <option value="NSG101">NSG 101 - Fundamentals of Nursing <span class="student-count">(35 students)</span></option>
+                                <option value="CRIM101">CRIM 101 - Introduction to Criminology <span class="student-count">(30 students)</span></option>
+                            </select>
+                            <button class="btn btn-primary" onclick="exportStudentList()">
+                                <i class="fas fa-download me-2"></i>Export List
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Students Table -->
+                    <div class="card dashboard-card">
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-hover" id="studentsTable">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Name</th>
+                                            <th>Program</th>
+                                            <th>Year</th>
+                                            <th>Section</th>
+                                            <th>Email</th>
+                                            <th>Final Grade</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="studentsTableBody">
+                                        <!-- Students will be loaded dynamically based on selection -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Grades Section -->
+                <div id="grades-section" class="content-section" style="display: none;">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h2><i class="fas fa-chart-line me-2"></i>Grade Management</h2>
+                        <button class="btn btn-primary" onclick="showAddGradeModal()">
+                            <i class="fas fa-plus me-2"></i>Add Grades
+                        </button>
+                    </div>
+
+                    <!-- Grade Entry Form -->
+                    <div class="card dashboard-card mb-4">
+                        <div class="card-header">
+                            <h5 class="mb-0 neon-text">Enter Final Grades</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Select Course</label>
+                                    <select class="form-select" id="gradeCourseSelect" onchange="loadStudentsForGrading()">
+                                        <option value="">Choose course</option>
+                                        <option value="IT301">IT 301 - Web Development</option>
+                                        <option value="IT305">IT 305 - Database Systems</option>
+                                        <option value="CS201">CS 201 - Data Structures</option>
+                                        <option value="IT302">IT 302 - Mobile App Development</option>
+                                        <option value="NSG101">NSG 101 - Fundamentals of Nursing</option>
+                                        <option value="CRIM101">CRIM 101 - Introduction to Criminology</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Semester</label>
+                                    <select class="form-select" id="gradeSemesterSelect">
+                                        <option value="1st Semester 2024">1st Semester 2024</option>
+                                        <option value="2nd Semester 2024">2nd Semester 2024</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div id="gradeEntryForm" style="display: none;">
+                                <div class="alert alert-info">
+                                    <i class="fas fa-info-circle me-2"></i>
+                                    <strong>Grading Scale:</strong>
+                                    Excellent (95-100%) | Very Good (90-94%) | Good (85-89%) | Satisfactory (80-84%) | Poor (Below 80%)
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table table-hover" id="gradeEntryTable">
+                                        <thead>
+                                            <tr>
+                                                <th>Student ID</th>
+                                                <th>Name</th>
+                                                <th>Current Final Grade</th>
+                                                <th>Final Grade (%)</th>
+                                                <th>Equivalent</th>
+                                                <th>Remarks</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="gradeEntryTableBody">
+                                            <!-- Grade entry rows will be loaded here -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="mt-3">
+                                    <button class="btn btn-success" onclick="saveGrades()">
+                                        <i class="fas fa-save me-2"></i>Save Final Grades
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Grades History -->
+                    <div class="card dashboard-card">
+                        <div class="card-header">
+                            <h5 class="mb-0 neon-text">Grade History</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-hover" id="gradesHistoryTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Student</th>
+                                            <th>Course</th>
+                                            <th>Semester</th>
+                                            <th>Final Grade (%)</th>
+                                            <th>Equivalent</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="gradesHistoryTableBody">
+                                        <tr>
+                                            <td>John Doe</td>
+                                            <td>IT 301 - Web Development</td>
+                                            <td>1st Semester 2024</td>
+                                            <td>89.8%</td>
+                                            <td><span class="grade-good">1.75</span></td>
+                                            <td><span class="badge bg-success">Passed</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Maria Santos</td>
+                                            <td>IT 301 - Web Development</td>
+                                            <td>1st Semester 2024</td>
+                                            <td>93.6%</td>
+                                            <td><span class="grade-very-good">1.50</span></td>
+                                            <td><span class="badge bg-success">Passed</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Sophia Anderson</td>
+                                            <td>NSG 101 - Fundamentals of Nursing</td>
+                                            <td>1st Semester 2024</td>
+                                            <td>97.0%</td>
+                                            <td><span class="grade-excellent">1.25</span></td>
+                                            <td><span class="badge bg-success">Passed</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Andrew Harris</td>
+                                            <td>CRIM 101 - Introduction to Criminology</td>
+                                            <td>1st Semester 2024</td>
+                                            <td>78.5%</td>
+                                            <td><span class="grade-poor">5.00</span></td>
+                                            <td><span class="badge bg-danger">Failed</span></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Profile Section -->
+                <div id="profile-section" class="content-section" style="display: none;">
+                    <div class="dashboard-header mb-4">
+                        <h2><i class="fas fa-user me-2"></i>My Profile</h2>
+                        <p class="mb-0">Manage your personal information and account settings.</p>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="card dashboard-card">
+                                <div class="card-header">
+                                    <h5 class="mb-0 neon-text">Personal Information</h5>
+                                </div>
+                                <div class="card-body">
+                                    <form id="profileForm">
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">First Name</label>
+                                                <input type="text" class="form-control" id="profileFirstName" value="Jane" required>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Last Name</label>
+                                                <input type="text" class="form-control" id="profileLastName" value="Smith" required>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Email</label>
+                                            <input type="email" class="form-control" id="profileEmail" value="jane.smith@mpsu.edu.ph" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Department</label>
+                                            <input type="text" class="form-control" id="profileDepartment" value="College of Information Technology" readonly>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Employee ID</label>
+                                            <input type="text" class="form-control" id="profileEmployeeId" value="T001" readonly>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Subjects</label>
+                                            <input type="text" class="form-control" id="profileSubjects" value="Web Development, Database Systems, Data Structures, Mobile App Development, Fundamentals of Nursing, Introduction to Criminology" readonly>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="fas fa-save me-2"></i>Update Profile
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card dashboard-card">
+                                <div class="card-header">
+                                    <h5 class="mb-0 neon-text">Account Settings</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <label class="form-label">Username</label>
+                                        <input type="text" class="form-control" id="profileUsername" value="teach001" readonly>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Change Password</label>
+                                        <button class="btn btn-outline-primary w-100" onclick="showChangePasswordModal()">
+                                            <i class="fas fa-key me-2"></i>Change Password
+                                        </button>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Last Login</label>
+                                        <input type="text" class="form-control" id="profileLastLogin" value="Dec 15, 2024 09:30 AM" readonly>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Account Status</label>
+                                        <input type="text" class="form-control" value="Active" readonly>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <!-- Add Grade Modal -->
+    <div class="modal fade" id="addGradeModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title neon-text">Add Final Grades</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="text-muted">Use the grade entry form in the Grades section to add or update student final grades.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Change Password Modal -->
+    <div class="modal fade" id="changePasswordModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title neon-text">Change Password</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="changePasswordForm">
+                        <div class="mb-3">
+                            <label class="form-label">Current Password</label>
+                            <input type="password" class="form-control" id="currentPassword" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">New Password</label>
+                            <input type="password" class="form-control" id="newPassword" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Confirm New Password</label>
+                            <input type="password" class="form-control" id="confirmNewPassword" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="changePassword()">Change Password</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Profile Modal -->
+    <div class="modal fade" id="profileModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title neon-text">Profile Information</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <i class="fas fa-chalkboard-teacher fa-3x text-primary mb-3"></i>
+                    <h4 id="modalTeacherName">Dr. Jane Smith</h4>
+                    <p class="text-muted" id="modalTeacherDepartment">College of Information Technology</p>
+                    <hr>
+                    <div class="row text-start">
+                        <div class="col-6">
+                            <strong>Employee ID:</strong><br>
+                            <span id="modalTeacherId">T001</span>
+                        </div>
+                        <div class="col-6">
+                            <strong>Email:</strong><br>
+                            <span id="modalTeacherEmail">jane.smith@mpsu.edu.ph</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Sample student data organized by course with percentage grades
+        const studentData = {
+            'IT301': [
+                { id: '2024001', name: 'John Doe', program: 'BS Information Technology', year: '3rd Year', section: 'A', email: 'john.doe@mpsu.edu.ph', grade: '89.8%' },
+                { id: '2024002', name: 'Maria Santos', program: 'BS Information Technology', year: '3rd Year', section: 'A', email: 'maria.santos@mpsu.edu.ph', grade: '93.6%' },
+                { id: '2024003', name: 'Carlos Reyes', program: 'BS Information Technology', year: '3rd Year', section: 'A', email: 'carlos.reyes@mpsu.edu.ph', grade: '87.2%' },
+                { id: '2024004', name: 'Anna Lopez', program: 'BS Information Technology', year: '3rd Year', section: 'B', email: 'anna.lopez@mpsu.edu.ph', grade: '82.5%' },
+                { id: '2024005', name: 'James Wilson', program: 'BS Information Technology', year: '3rd Year', section: 'B', email: 'james.wilson@mpsu.edu.ph', grade: '91.3%' }
+            ],
+            'IT305': [
+                { id: '2024001', name: 'John Doe', program: 'BS Information Technology', year: '3rd Year', section: 'A', email: 'john.doe@mpsu.edu.ph', grade: '88.9%' },
+                { id: '2024002', name: 'Maria Santos', program: 'BS Information Technology', year: '3rd Year', section: 'A', email: 'maria.santos@mpsu.edu.ph', grade: '94.2%' },
+                { id: '2024006', name: 'Robert Garcia', program: 'BS Information Technology', year: '3rd Year', section: 'A', email: 'robert.garcia@mpsu.edu.ph', grade: '86.7%' },
+                { id: '2024007', name: 'Lisa Martinez', program: 'BS Information Technology', year: '3rd Year', section: 'B', email: 'lisa.martinez@mpsu.edu.ph', grade: '83.1%' }
+            ],
+            'CS201': [
+                { id: '2024008', name: 'Michael Brown', program: 'BS Computer Science', year: '2nd Year', section: 'A', email: 'michael.brown@mpsu.edu.ph', grade: '92.5%' },
+                { id: '2024009', name: 'Sarah Johnson', program: 'BS Computer Science', year: '2nd Year', section: 'A', email: 'sarah.johnson@mpsu.edu.ph', grade: '96.8%' },
+                { id: '2024010', name: 'David Lee', program: 'BS Computer Science', year: '2nd Year', section: 'B', email: 'david.lee@mpsu.edu.ph', grade: '89.3%' },
+                { id: '2024011', name: 'Jennifer Kim', program: 'BS Computer Science', year: '2nd Year', section: 'B', email: 'jennifer.kim@mpsu.edu.ph', grade: '84.7%' }
+            ],
+            'IT302': [
+                { id: '2024001', name: 'John Doe', program: 'BS Information Technology', year: '3rd Year', section: 'A', email: 'john.doe@mpsu.edu.ph', grade: '90.1%' },
+                { id: '2024003', name: 'Carlos Reyes', program: 'BS Information Technology', year: '3rd Year', section: 'A', email: 'carlos.reyes@mpsu.edu.ph', grade: '87.9%' },
+                { id: '2024012', name: 'Amanda White', program: 'BS Information Technology', year: '3rd Year', section: 'B', email: 'amanda.white@mpsu.edu.ph', grade: '93.4%' },
+                { id: '2024013', name: 'Daniel Clark', program: 'BS Information Technology', year: '3rd Year', section: 'B', email: 'daniel.clark@mpsu.edu.ph', grade: '85.6%' }
+            ],
+            'NSG101': [
+                { id: '2024014', name: 'Sophia Anderson', program: 'BS Nursing', year: '1st Year', section: 'A', email: 'sophia.anderson@mpsu.edu.ph', grade: '97.0%' },
+                { id: '2024015', name: 'Matthew Taylor', program: 'BS Nursing', year: '1st Year', section: 'A', email: 'matthew.taylor@mpsu.edu.ph', grade: '88.5%' },
+                { id: '2024016', name: 'Emily Thomas', program: 'BS Nursing', year: '1st Year', section: 'B', email: 'emily.thomas@mpsu.edu.ph', grade: '92.8%' },
+                { id: '2024017', name: 'Christopher Moore', program: 'BS Nursing', year: '1st Year', section: 'B', email: 'christopher.moore@mpsu.edu.ph', grade: '95.3%' }
+            ],
+            'CRIM101': [
+                { id: '2024018', name: 'Andrew Harris', program: 'BS Criminology', year: '1st Year', section: 'A', email: 'andrew.harris@mpsu.edu.ph', grade: '89.7%' },
+                { id: '2024019', name: 'Olivia Martin', program: 'BS Criminology', year: '1st Year', section: 'A', email: 'olivia.martin@mpsu.edu.ph', grade: '83.4%' },
+                { id: '2024020', name: 'William Thompson', program: 'BS Criminology', year: '1st Year', section: 'B', email: 'william.thompson@mpsu.edu.ph', grade: '91.2%' },
+                { id: '2024021', name: 'Isabella Garcia', program: 'BS Criminology', year: '1st Year', section: 'B', email: 'isabella.garcia@mpsu.edu.ph', grade: '86.9%' }
+            ]
+        };
+
+        // Function to get grade equivalent based on percentage
+        function getGradeEquivalent(percentage) {
+            const percent = parseFloat(percentage);
+            if (percent >= 95) return { equivalent: '1.25', class: 'grade-excellent', description: 'Excellent' };
+            if (percent >= 90) return { equivalent: '1.50', class: 'grade-very-good', description: 'Very Good' };
+            if (percent >= 85) return { equivalent: '1.75', class: 'grade-good', description: 'Good' };
+            if (percent >= 80) return { equivalent: '2.00', class: 'grade-satisfactory', description: 'Satisfactory' };
+            return { equivalent: '5.00', class: 'grade-poor', description: 'Poor' };
+        }
+
+        // Function to get grade class based on percentage
+        function getGradeClass(percentage) {
+            const percent = parseFloat(percentage);
+            if (percent >= 95) return 'grade-excellent';
+            if (percent >= 90) return 'grade-very-good';
+            if (percent >= 85) return 'grade-good';
+            if (percent >= 80) return 'grade-satisfactory';
+            return 'grade-poor';
+        }
+
+        // Basic functionality for the faculty portal
+        function showSection(section) {
+            // Hide all sections
+            document.querySelectorAll('.content-section').forEach(el => {
+                el.style.display = 'none';
+            });
+
+            // Show the selected section
+            document.getElementById(`${section}-section`).style.display = 'block';
+
+            // Update active nav link
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            // Load students when students section is shown
+            if (section === 'students') {
+                filterStudents();
+            }
+        }
+
+        // Filter students based on course selection
+        function filterStudents() {
+            const courseFilter = document.getElementById('courseFilter').value;
+            const tableBody = document.getElementById('studentsTableBody');
+
+            // Clear existing table rows
+            tableBody.innerHTML = '';
+
+            let studentsToShow = [];
+
+            if (courseFilter === '') {
+                // Show all students from all courses
+                Object.values(studentData).forEach(courseStudents => {
+                    studentsToShow = studentsToShow.concat(courseStudents);
+                });
+            } else {
+                // Show students from selected course
+                studentsToShow = studentData[courseFilter] || [];
+            }
+
+            // Populate table with students
+            studentsToShow.forEach(student => {
+                const gradeClass = getGradeClass(student.grade);
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${student.id}</td>
+                    <td>${student.name}</td>
+                    <td>${student.program}</td>
+                    <td>${student.year}</td>
+                    <td>${student.section}</td>
+                    <td>${student.email}</td>
+                    <td><span class="${gradeClass}">${student.grade}</span></td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-primary" onclick="viewStudentDetails('${student.id}')">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+
+            // Show message if no students found
+            if (studentsToShow.length === 0) {
+                const row = document.createElement('tr');
+                row.innerHTML = `<td colspan="8" class="text-center text-muted">No students found for the selected course</td>`;
+                tableBody.appendChild(row);
+            }
+        }
+
+        // Load students for grade entry
+        function loadStudentsForGrading() {
+            const courseSelect = document.getElementById('gradeCourseSelect').value;
+            const tableBody = document.getElementById('gradeEntryTableBody');
+            const gradeEntryForm = document.getElementById('gradeEntryForm');
+
+            if (courseSelect === '') {
+                gradeEntryForm.style.display = 'none';
+                return;
+            }
+
+            // Clear existing table rows
+            tableBody.innerHTML = '';
+
+            const students = studentData[courseSelect] || [];
+
+            // Populate table with students for grade entry
+            students.forEach(student => {
+                const currentGrade = student.grade.replace('%', '');
+                const gradeInfo = getGradeEquivalent(currentGrade);
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${student.id}</td>
+                    <td>${student.name}</td>
+                    <td><span class="${getGradeClass(student.grade)}">${student.grade}</span></td>
+                    <td>
+                        <input type="number" class="form-control form-control-sm" step="0.1" min="0" max="100" value="${currentGrade}">
+                    </td>
+                    <td>
+                        <span class="${gradeInfo.class}">${gradeInfo.equivalent}</span>
+                    </td>
+                    <td>
+                        <select class="form-select form-select-sm">
+                            <option ${gradeInfo.description === 'Excellent' ? 'selected' : ''}>Excellent</option>
+                            <option ${gradeInfo.description === 'Very Good' ? 'selected' : ''}>Very Good</option>
+                            <option ${gradeInfo.description === 'Good' ? 'selected' : ''}>Good</option>
+                            <option ${gradeInfo.description === 'Satisfactory' ? 'selected' : ''}>Satisfactory</option>
+                            <option ${gradeInfo.description === 'Poor' ? 'selected' : ''}>Poor</option>
+                        </select>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+
+            gradeEntryForm.style.display = 'block';
+        }
+
+        // Modal functions
+        function showAddGradeModal() {
+            const modal = new bootstrap.Modal(document.getElementById('addGradeModal'));
+            modal.show();
+        }
+
+        function showChangePasswordModal() {
+            const modal = new bootstrap.Modal(document.getElementById('changePasswordModal'));
+            modal.show();
+        }
+
+        function showProfileModal() {
+            // Set modal content
+            document.getElementById('modalTeacherName').textContent = 'Dr. Jane Smith';
+            document.getElementById('modalTeacherDepartment').textContent = 'College of Information Technology';
+            document.getElementById('modalTeacherId').textContent = 'T001';
+            document.getElementById('modalTeacherEmail').textContent = 'jane.smith@mpsu.edu.ph';
+
+            const modal = new bootstrap.Modal(document.getElementById('profileModal'));
+            modal.show();
+        }
+
+        // Form handlers
+        function changePassword() {
+            const currentPassword = document.getElementById('currentPassword').value;
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmNewPassword').value;
+
+            if (newPassword !== confirmPassword) {
+                alert('New passwords do not match!');
+                return;
+            }
+
+            // In a real application, this would send a request to change the password
+            alert('Password changed successfully!');
+            const modal = bootstrap.Modal.getInstance(document.getElementById('changePasswordModal'));
+            modal.hide();
+        }
+
+        function saveGrades() {
+            alert('Final grades saved successfully!');
+        }
+
+        function exportStudentList() {
+            alert('Student list exported successfully!');
+        }
+
+        function viewStudentDetails(studentId) {
+            alert(`Viewing details for student ID: ${studentId}`);
+        }
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set default active section
+            showSection('dashboard');
+
+            // Set teacher name
+            document.getElementById('teacherName').textContent = 'Dr. Jane Smith';
+        });
+    </script>
+</body>
+</html>

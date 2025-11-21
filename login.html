@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MPSU SIS - Login</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #1a237e;
+            --secondary-color: #283593;
+            --accent-color: #5c6bc0;
+            --light-bg: #f8f9fa;
+            --dark-text: #212529;
+            --light-text: #6c757d;
+        }
+
+        body {
+            background-color: var(--light-bg);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--dark-text);
+            padding-top: 70px;
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .navbar-brand {
+            font-weight: 600;
+        }
+
+        .navbar-logo {
+            height: 30px;
+        }
+
+        .login-section {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            padding: 40px 0;
+            min-height: calc(100vh - 70px);
+            display: flex;
+            align-items: center;
+        }
+
+        .login-card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .login-card .card-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 30px 20px;
+            border-bottom: none;
+        }
+
+        .logo-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        .logo-glow {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80px;
+            height: 80px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            filter: blur(10px);
+        }
+
+        .logo {
+            font-size: 32px;
+            font-weight: 700;
+            color: white;
+            position: relative;
+            z-index: 1;
+        }
+
+        .neon-text {
+            color: white;
+            font-weight: 600;
+            text-shadow: 0 0 10px rgba(255,255,255,0.5);
+        }
+
+        .card-body {
+            padding: 30px;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: var(--dark-text);
+        }
+
+        .input-group-text {
+            background-color: #f8f9fa;
+            border-right: none;
+        }
+
+        .form-control {
+            border-left: none;
+            padding-left: 0;
+        }
+
+        .form-control:focus {
+            box-shadow: none;
+            border-color: #ced4da;
+        }
+
+        .password-toggle {
+            cursor: pointer;
+            background-color: #f8f9fa;
+            border-left: none;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            padding: 12px;
+            font-weight: 600;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--secondary-color);
+            border-color: var(--secondary-color);
+        }
+
+        .btn-outline-primary {
+            color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .btn-outline-primary:hover {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .demo-accounts {
+            background-color: #1a1a2e !important;
+            border: 1px solid #2d3047;
+        }
+
+        .forgot-password {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .forgot-password:hover {
+            text-decoration: underline;
+        }
+
+        .footer {
+            background-color: var(--dark-text);
+            color: white;
+            padding: 20px 0;
+            margin-top: 0;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 8px;
+            color: white;
+            z-index: 10000;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+            max-width: 350px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.success {
+            background-color: #28a745;
+        }
+
+        .notification.error {
+            background-color: #dc3545;
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(26, 35, 126, 0.4);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(26, 35, 126, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(26, 35, 126, 0);
+            }
+        }
+
+        /* OTP Input Styling */
+        #otpInput {
+            letter-spacing: 10px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body class="body-home">
+
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+    <div class="container">
+        <a class="navbar-brand" href="index.html">
+            <img src="mpsu.png" alt="MPSU Logo" class="navbar-logo me-2">MPSU SIS
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="index.html">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="login.html">Login</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="register.html">Register</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Login Section -->
+<section class="login-section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-lg-5">
+                <div class="card login-card">
+
+                    <div class="card-header text-center">
+                        <div class="logo-container mb-3">
+                            <div class="logo-glow"></div>
+                            <div class="logo">MPSU</div>
+                        </div>
+                        <h3 class="neon-text">Student Information System</h3>
+                        <h5>Login to Your Account</h5>
+                    </div>
+
+                    <div class="card-body">
+                        <form id="loginForm">
+                            <div class="mb-4">
+                                <label for="username" class="form-label">Username</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                    <input type="text" class="form-control" id="username" placeholder="Enter your username" required>
+                                </div>
+                                <div class="form-text text-muted">Use your student ID, employee ID, or admin username</div>
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="password" class="form-label">Password</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                                    <input type="password" class="form-control" id="password" placeholder="Enter your password" required>
+                                    <span class="input-group-text password-toggle" id="togglePassword">
+                                        <i class="fas fa-eye"></i>
+                                    </span>
+                                </div>
+                                <div class="form-text text-muted">
+                                    <a href="#" class="forgot-password">Forgot password?</a>
+                                </div>
+                            </div>
+
+                            <div class="mb-3 form-check">
+                                <input type="checkbox" class="form-check-input" id="rememberMe">
+                                <label class="form-check-label" for="rememberMe">Remember me</label>
+                            </div>
+
+                            <div class="d-grid mb-3">
+                                <button type="submit" class="btn btn-primary pulse" id="loginButton">
+                                    <i class="fas fa-sign-in-alt me-2"></i> Login
+                                </button>
+                            </div>
+                        </form>
+
+                        <!-- DEMO ACCOUNTS -->
+                        <div class="demo-accounts mt-4 p-3 bg-dark rounded">
+                            <h6 class="neon-text mb-3">Demo Accounts</h6>
+                            <div class="row">
+                                <div class="col-4">
+                                    <small class="text-muted d-block">Admin</small>
+                                    <strong class="text-white">admin</strong><br>
+                                    <small class="text-muted">admin123</small>
+                                </div>
+                                <div class="col-4">
+                                    <small class="text-muted d-block">Administrator</small>
+                                    <strong class="text-white">teach001</strong><br>
+                                    <small class="text-muted">teacher123</small>
+                                </div>
+                                <div class="col-4">
+                                    <small class="text-muted d-block">Student</small>
+                                    <strong class="text-white">stud001</strong><br>
+                                    <small class="text-muted">student123</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="text-center mt-3">
+                            <p>Don't have an account?
+                                <a href="register.html" class="btn btn-outline-primary btn-sm ms-2">
+                                    <i class="fas fa-user-plus me-1"></i> Sign Up
+                                </a>
+                            </p>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="container">
+        <div class="text-center">
+            <p>&copy; 2024 Mountain Province State University. All rights reserved.</p>
+        </div>
+    </div>
+</footer>
+
+<!-- OTP Modal -->
+<div class="modal fade" id="otpModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title neon-text">Verification Code</h5>
+                <button class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+                <p class="text-muted">Enter the 6-digit verification code sent to your email.</p>
+
+                <input type="text" id="otpInput" maxlength="6" class="form-control text-center fs-4" placeholder="______">
+
+                <div id="otpError" class="text-danger mt-2" style="display:none;">Incorrect code. Try again.</div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button class="btn btn-primary" id="verifyOtpBtn">Verify</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+// Initialize demo users if not exists
+function initializeDemoUsers() {
+    const users = JSON.parse(localStorage.getItem('mpsu_users')) || [];
+
+    // Add demo users if they don't exist
+    const demoUsers = [
+        {
+            username: 'admin',
+            password: 'admin123',
+            role: 'admin',
+            name: 'System Administrator',
+            email: 'admin@mpsu.edu.ph',
+            employeeId: 'A001',
+            department: 'Administration'
+        },
+        {
+            username: 'teach001',
+            password: 'teacher123',
+            role: 'admin',
+            name: 'Dr. Jane Smith',
+            email: 'jane.smith@mpsu.edu.ph',
+            employeeId: 'T001',
+            department: 'College of Information Technology'
+        },
+        {
+            username: 'stud001',
+            password: 'student123',
+            role: 'student',
+            name: 'John Doe',
+            email: 'john.doe@mpsu.edu.ph',
+            studentId: '2024001',
+            course: 'BS Information Technology',
+            year: '3rd Year',
+            section: 'A',
+            firstName: 'John',
+            lastName: 'Doe'
+        }
+    ];
+
+    let needsUpdate = false;
+    demoUsers.forEach(demoUser => {
+        if (!users.find(u => u.username === demoUser.username)) {
+            users.push(demoUser);
+            needsUpdate = true;
+        }
+    });
+
+    if (needsUpdate) {
+        localStorage.setItem('mpsu_users', JSON.stringify(users));
+    }
+}
+
+// Password toggle
+document.getElementById('togglePassword').addEventListener('click', function () {
+    const passwordInput = document.getElementById('password');
+    const icon = this.querySelector('i');
+
+    if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        icon.classList.replace('fa-eye', 'fa-eye-slash');
+    } else {
+        passwordInput.type = 'password';
+        icon.classList.replace('fa-eye-slash', 'fa-eye');
+    }
+});
+
+// LOGIN + OTP
+document.getElementById('loginForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+
+    const loginButton = document.getElementById('loginButton');
+    loginButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Logging in...';
+    loginButton.disabled = true;
+
+    setTimeout(() => {
+        const users = JSON.parse(localStorage.getItem('mpsu_users')) || [];
+        const user = users.find(u => u.username === username && u.password === password);
+
+        if (user) {
+            const otp = Math.floor(100000 + Math.random() * 900000).toString();
+            localStorage.setItem("pending_otp", otp);
+            localStorage.setItem("pending_user", JSON.stringify(user));
+
+            console.log("OTP:", otp);
+
+            new bootstrap.Modal(document.getElementById("otpModal")).show();
+            showNotification("Verification code sent to your email.", "success");
+        } else {
+            showNotification("Invalid username or password", "error");
+            loginButton.disabled = false;
+        }
+
+        loginButton.innerHTML = '<i class="fas fa-sign-in-alt me-2"></i> Login';
+    }, 800);
+});
+
+// OTP Verification
+document.getElementById("verifyOtpBtn").addEventListener('click', function() {
+    const entered = document.getElementById('otpInput').value;
+    const real = localStorage.getItem("pending_otp");
+
+    if (entered !== real) {
+        document.getElementById('otpError').style.display = "block";
+        return;
+    }
+
+    const user = JSON.parse(localStorage.getItem("pending_user"));
+    localStorage.setItem("mpsu_current_user", JSON.stringify(user));
+
+    localStorage.removeItem("pending_otp");
+    localStorage.removeItem("pending_user");
+
+    showNotification("Verification successful!", "success");
+
+    setTimeout(() => {
+        // Redirect based on user role
+        if (user.role === "student") {
+            window.location.href = "student-dashboard.html";
+        } else if (user.role === "admin") {
+            window.location.href = "teacher-dashboard.html";
+        } else {
+            window.location.href = "index.html";
+        }
+    }, 800);
+});
+
+// Notification
+function showNotification(message, type = "success") {
+    const n = document.createElement("div");
+    n.className = `notification ${type}`;
+    n.innerHTML = `<span>${message}</span>`;
+    document.body.appendChild(n);
+
+    setTimeout(() => n.classList.add("show"), 100);
+    setTimeout(() => n.classList.remove("show"), 3000);
+    setTimeout(() => n.remove(), 3500);
+}
+
+// Initialize demo users when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    initializeDemoUsers();
+});
+</script>
+
+</body>
+</html>

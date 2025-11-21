@@ -1,0 +1,1045 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MPSU SIS - Register</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #1a237e;
+            --secondary-color: #283593;
+            --accent-color: #5c6bc0;
+            --light-bg: #f8f9fa;
+            --dark-text: #212529;
+            --light-text: #6c757d;
+        }
+
+        body {
+            background-color: var(--light-bg);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--dark-text);
+            padding-top: 70px;
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .navbar-brand {
+            font-weight: 600;
+        }
+
+        .navbar-logo {
+            height: 30px;
+        }
+
+        .register-section {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            padding: 40px 0;
+            min-height: calc(100vh - 70px);
+            display: flex;
+            align-items: center;
+        }
+
+        .register-card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        .register-card .card-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 25px 20px;
+            border-bottom: none;
+        }
+
+        .logo-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        .logo-glow {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80px;
+            height: 80px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            filter: blur(10px);
+        }
+
+        .logo {
+            font-size: 32px;
+            font-weight: 700;
+            color: white;
+            position: relative;
+            z-index: 1;
+        }
+
+        .neon-text {
+            color: white;
+            font-weight: 600;
+            text-shadow: 0 0 10px rgba(255,255,255,0.5);
+        }
+
+        .card-body {
+            padding: 30px;
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: var(--dark-text);
+            margin-bottom: 8px;
+        }
+
+        .input-group-text {
+            background-color: #f8f9fa;
+            border-right: none;
+        }
+
+        .form-control {
+            border-left: none;
+            padding-left: 0;
+        }
+
+        .form-control:focus {
+            box-shadow: none;
+            border-color: #ced4da;
+        }
+
+        .password-toggle {
+            cursor: pointer;
+            background-color: #f8f9fa;
+            border-left: none;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            padding: 10px 20px;
+            font-weight: 600;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--secondary-color);
+            border-color: var(--secondary-color);
+        }
+
+        .btn-outline-primary {
+            color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .btn-outline-primary:hover {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .footer {
+            background-color: var(--dark-text);
+            color: white;
+            padding: 20px 0;
+            margin-top: 0;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 8px;
+            color: white;
+            z-index: 10000;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+            max-width: 350px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.success {
+            background-color: #28a745;
+        }
+
+        .notification.error {
+            background-color: #dc3545;
+        }
+
+        .progress {
+            height: 8px;
+        }
+
+        .password-strength {
+            font-size: 0.875rem;
+        }
+
+        .password-weak {
+            color: #dc3545;
+        }
+
+        .password-medium {
+            color: #fd7e14;
+        }
+
+        .password-strong {
+            color: #28a745;
+        }
+
+        .form-text {
+            font-size: 0.875rem;
+        }
+
+        .step-indicator {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .step-indicator::before {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background-color: #e9ecef;
+            z-index: 1;
+        }
+
+        .step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .step-number {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: #e9ecef;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .step.active .step-number {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .step-label {
+            font-size: 0.875rem;
+            color: var(--light-text);
+        }
+
+        .step.active .step-label {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .form-step {
+            display: none;
+        }
+
+        .form-step.active {
+            display: block;
+        }
+
+        .form-field {
+            margin-bottom: 20px;
+        }
+
+        .form-actions {
+            margin-top: 30px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .role-selection {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .role-option {
+            flex: 1;
+            text-align: center;
+            padding: 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .role-option:hover {
+            border-color: var(--primary-color);
+        }
+
+        .role-option.selected {
+            border-color: var(--primary-color);
+            background-color: rgba(26, 35, 126, 0.05);
+        }
+
+        .role-icon {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+
+        /* Custom scrollbar for card body */
+        .card-body::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .card-body::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .card-body::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 10px;
+        }
+
+        .card-body::-webkit-scrollbar-thumb:hover {
+            background: #a8a8a8;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .card-body {
+                padding: 20px;
+            }
+
+            .register-section {
+                padding: 20px 0;
+            }
+
+            .role-selection {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body class="body-home">
+
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+    <div class="container">
+        <a class="navbar-brand" href="index.html">
+            <img src="mpsu.png" alt="MPSU Logo" class="navbar-logo me-2">MPSU SIS
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="index.html">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="login.html">Login</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="register.html">Register</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Register Section -->
+<section class="register-section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-6">
+                <div class="card register-card">
+                    <div class="card-header text-center">
+                        <div class="logo-container mb-3">
+                            <div class="logo-glow"></div>
+                            <div class="logo">MPSU</div>
+                        </div>
+                        <h3 class="neon-text">Student Information System</h3>
+                        <h5>Create Your Account</h5>
+                    </div>
+
+                    <div class="card-body">
+                        <!-- Step Indicator -->
+                        <div class="step-indicator">
+                            <div class="step active" id="step1-indicator">
+                                <div class="step-number">1</div>
+                                <div class="step-label">Role</div>
+                            </div>
+                            <div class="step" id="step2-indicator">
+                                <div class="step-number">2</div>
+                                <div class="step-label">Account</div>
+                            </div>
+                            <div class="step" id="step3-indicator">
+                                <div class="step-number">3</div>
+                                <div class="step-label">Details</div>
+                            </div>
+                        </div>
+
+                        <form id="registerForm">
+                            <!-- Step 1: Role Selection -->
+                            <div class="form-step active" id="step1">
+                                <h5 class="mb-4">Select Your Role</h5>
+
+                                <div class="role-selection">
+                                    <div class="role-option" data-role="student" onclick="selectRole('student')">
+                                        <div class="role-icon">
+                                            <i class="fas fa-graduation-cap"></i>
+                                        </div>
+                                        <h6>Student</h6>
+                                        <p class="small text-muted mb-0">Access student portal with course management and grades</p>
+                                    </div>
+                                    <div class="role-option" data-role="admin" onclick="selectRole('admin')">
+                                        <div class="role-icon">
+                                            <i class="fas fa-user-shield"></i>
+                                        </div>
+                                        <h6>Administrator</h6>
+                                        <p class="small text-muted mb-0">Access faculty portal with student and grade management</p>
+                                    </div>
+                                </div>
+
+                                <input type="hidden" id="selectedRole" name="role" required>
+
+                                <div class="form-actions">
+                                    <div></div>
+                                    <button type="button" class="btn btn-primary" id="nextStep1">Next <i class="fas fa-arrow-right ms-1"></i></button>
+                                </div>
+                            </div>
+
+                            <!-- Step 2: Account Information -->
+                            <div class="form-step" id="step2">
+                                <h5 class="mb-4">Account Information</h5>
+
+                                <div class="form-field">
+                                    <label for="username" class="form-label">Username *</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                        <input type="text" class="form-control" id="username" placeholder="Choose a username" required>
+                                    </div>
+                                    <div class="form-text">This will be your login username</div>
+                                    <div id="usernameError" class="text-danger form-text" style="display: none;">Username already exists</div>
+                                </div>
+
+                                <div class="form-field">
+                                    <label for="email" class="form-label">Email Address *</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                                        <input type="email" class="form-control" id="email" placeholder="your.email@mpsu.edu.ph" required>
+                                    </div>
+                                    <div class="form-text">Use your MPSU email if available</div>
+                                    <div id="emailError" class="text-danger form-text" style="display: none;">Email already registered</div>
+                                </div>
+
+                                <div class="form-field">
+                                    <label for="password" class="form-label">Password *</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                                        <input type="password" class="form-control" id="password" placeholder="Create a password" required>
+                                        <span class="input-group-text password-toggle" id="togglePassword">
+                                            <i class="fas fa-eye"></i>
+                                        </span>
+                                    </div>
+                                    <div class="password-strength mt-1" id="passwordStrength"></div>
+                                </div>
+
+                                <div class="form-field">
+                                    <label for="confirmPassword" class="form-label">Confirm Password *</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                                        <input type="password" class="form-control" id="confirmPassword" placeholder="Confirm your password" required>
+                                        <span class="input-group-text password-toggle" id="toggleConfirmPassword">
+                                            <i class="fas fa-eye"></i>
+                                        </span>
+                                    </div>
+                                    <div id="passwordMatch" class="form-text"></div>
+                                </div>
+
+                                <div class="form-actions">
+                                    <button type="button" class="btn btn-outline-secondary" id="prevStep2"><i class="fas fa-arrow-left me-1"></i> Back</button>
+                                    <button type="button" class="btn btn-primary" id="nextStep2">Next <i class="fas fa-arrow-right ms-1"></i></button>
+                                </div>
+                            </div>
+
+                            <!-- Step 3: Personal Information -->
+                            <div class="form-step" id="step3">
+                                <h5 class="mb-4" id="step3Title">Personal Information</h5>
+
+                                <!-- Common Fields for All Roles -->
+                                <div class="form-field">
+                                    <label for="firstName" class="form-label">First Name *</label>
+                                    <input type="text" class="form-control" id="firstName" placeholder="Enter your first name" required>
+                                </div>
+
+                                <div class="form-field">
+                                    <label for="lastName" class="form-label">Last Name *</label>
+                                    <input type="text" class="form-control" id="lastName" placeholder="Enter your last name" required>
+                                </div>
+
+                                <div class="form-field">
+                                    <label for="phone" class="form-label">Phone Number</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                                        <input type="tel" class="form-control" id="phone" placeholder="+63 912 345 6789">
+                                    </div>
+                                </div>
+
+                                <!-- Student Specific Fields -->
+                                <div id="studentFields">
+                                    <div class="form-field">
+                                        <label for="studentId" class="form-label">Student ID *</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="fas fa-id-card"></i></span>
+                                            <input type="text" class="form-control" id="studentId" placeholder="e.g., 2024001">
+                                        </div>
+                                        <div class="form-text">Your official MPSU student ID</div>
+                                    </div>
+
+                                    <div class="form-field">
+                                        <label for="course" class="form-label">Course/Program *</label>
+                                        <select class="form-select" id="course">
+                                            <option value="" selected disabled>Select your course</option>
+                                            <option value="BS Information Technology">BS Information Technology</option>
+                                            <option value="BS Computer Science">BS Computer Science</option>
+                                            <option value="BS Education">BS Education</option>
+                                            <option value="BS Business Administration">BS Business Administration</option>
+                                            <option value="BS Hospitality Management">BS Hospitality Management</option>
+                                            <option value="BS Criminology">BS Criminology</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="form-field">
+                                        <label for="year" class="form-label">Year Level *</label>
+                                        <select class="form-select" id="year">
+                                            <option value="" selected disabled>Select year level</option>
+                                            <option value="1st Year">1st Year</option>
+                                            <option value="2nd Year">2nd Year</option>
+                                            <option value="3rd Year">3rd Year</option>
+                                            <option value="4th Year">4th Year</option>
+                                            <option value="5th Year">5th Year</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="form-field">
+                                        <label for="section" class="form-label">Section</label>
+                                        <input type="text" class="form-control" id="section" placeholder="e.g., A, B, C">
+                                    </div>
+                                </div>
+
+                                <!-- Admin Specific Fields -->
+                                <div id="adminFields" style="display: none;">
+                                    <div class="form-field">
+                                        <label for="employeeId" class="form-label">Employee ID *</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="fas fa-id-badge"></i></span>
+                                            <input type="text" class="form-control" id="employeeId" placeholder="e.g., T001">
+                                        </div>
+                                        <div class="form-text">Your official MPSU employee ID</div>
+                                    </div>
+
+                                    <div class="form-field">
+                                        <label for="department" class="form-label">Department *</label>
+                                        <select class="form-select" id="department">
+                                            <option value="" selected disabled>Select department</option>
+                                            <option value="College of Information Technology">College of Information Technology</option>
+                                            <option value="College of Education">College of Education</option>
+                                            <option value="College of Business Administration">College of Business Administration</option>
+                                            <option value="College of Hospitality Management">College of Hospitality Management</option>
+                                            <option value="College of Criminology">College of Criminology</option>
+                                            <option value="Administration">Administration</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-field">
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" id="agreeTerms" required>
+                                        <label class="form-check-label" for="agreeTerms">
+                                            I agree to the <a href="#" class="text-primary">Terms and Conditions</a> and <a href="#" class="text-primary">Privacy Policy</a>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="form-actions">
+                                    <button type="button" class="btn btn-outline-secondary" id="prevStep3"><i class="fas fa-arrow-left me-1"></i> Back</button>
+                                    <button type="submit" class="btn btn-success" id="registerButton">
+                                        <i class="fas fa-user-plus me-2"></i> Create Account
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+
+                        <div class="text-center mt-4 pt-3 border-top">
+                            <p class="mb-0">Already have an account?
+                                <a href="login.html" class="btn btn-outline-primary btn-sm ms-2">
+                                    <i class="fas fa-sign-in-alt me-1"></i> Login
+                                </a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="container">
+        <div class="text-center">
+            <p>&copy; 2024 Mountain Province State University. All rights reserved.</p>
+        </div>
+    </div>
+</footer>
+
+<!-- Success Modal -->
+<div class="modal fade" id="successModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-success">Registration Successful!</h5>
+                <button class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-center">
+                <i class="fas fa-check-circle fa-3x text-success mb-3"></i>
+                <p>Your account has been created successfully.</p>
+                <p class="text-muted" id="successMessage">You can now login with your credentials.</p>
+            </div>
+            <div class="modal-footer justify-content-center">
+                <button class="btn btn-primary" id="goToLogin">Go to Login</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+// Current step tracking
+let currentStep = 1;
+let selectedRole = '';
+
+// Role selection function
+function selectRole(role) {
+    selectedRole = role;
+    document.getElementById('selectedRole').value = role;
+
+    // Update UI for selected role
+    document.querySelectorAll('.role-option').forEach(option => {
+        option.classList.remove('selected');
+    });
+    document.querySelector(`.role-option[data-role="${role}"]`).classList.add('selected');
+
+    // Update step 3 title based on role
+    const step3Title = document.getElementById('step3Title');
+    if (role === 'student') {
+        step3Title.textContent = 'Student Information';
+    } else {
+        step3Title.textContent = 'Administrator Information';
+    }
+}
+
+// Show/hide fields based on role
+function toggleRoleSpecificFields() {
+    const studentFields = document.getElementById('studentFields');
+    const adminFields = document.getElementById('adminFields');
+
+    if (selectedRole === 'student') {
+        studentFields.style.display = 'block';
+        adminFields.style.display = 'none';
+
+        // Make student fields required
+        document.getElementById('studentId').required = true;
+        document.getElementById('course').required = true;
+        document.getElementById('year').required = true;
+
+        // Make admin fields not required
+        document.getElementById('employeeId').required = false;
+        document.getElementById('department').required = false;
+    } else {
+        studentFields.style.display = 'none';
+        adminFields.style.display = 'block';
+
+        // Make student fields not required
+        document.getElementById('studentId').required = false;
+        document.getElementById('course').required = false;
+        document.getElementById('year').required = false;
+
+        // Make admin fields required
+        document.getElementById('employeeId').required = true;
+        document.getElementById('department').required = true;
+    }
+}
+
+// Password toggle functionality
+document.getElementById('togglePassword').addEventListener('click', function () {
+    const passwordInput = document.getElementById('password');
+    const icon = this.querySelector('i');
+
+    if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        icon.classList.replace('fa-eye', 'fa-eye-slash');
+    } else {
+        passwordInput.type = 'password';
+        icon.classList.replace('fa-eye-slash', 'fa-eye');
+    }
+});
+
+document.getElementById('toggleConfirmPassword').addEventListener('click', function () {
+    const passwordInput = document.getElementById('confirmPassword');
+    const icon = this.querySelector('i');
+
+    if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        icon.classList.replace('fa-eye', 'fa-eye-slash');
+    } else {
+        passwordInput.type = 'password';
+        icon.classList.replace('fa-eye-slash', 'fa-eye');
+    }
+});
+
+// Password strength indicator
+document.getElementById('password').addEventListener('input', function() {
+    const password = this.value;
+    const strengthIndicator = document.getElementById('passwordStrength');
+
+    if (password.length === 0) {
+        strengthIndicator.textContent = '';
+        return;
+    }
+
+    let strength = 0;
+    let feedback = '';
+
+    // Check password length
+    if (password.length >= 8) strength++;
+
+    // Check for lowercase letters
+    if (/[a-z]/.test(password)) strength++;
+
+    // Check for uppercase letters
+    if (/[A-Z]/.test(password)) strength++;
+
+    // Check for numbers
+    if (/[0-9]/.test(password)) strength++;
+
+    // Check for special characters
+    if (/[^A-Za-z0-9]/.test(password)) strength++;
+
+    // Determine strength level
+    if (strength <= 2) {
+        feedback = '<span class="password-weak">Weak password</span>';
+    } else if (strength <= 4) {
+        feedback = '<span class="password-medium">Medium strength password</span>';
+    } else {
+        feedback = '<span class="password-strong">Strong password</span>';
+    }
+
+    strengthIndicator.innerHTML = feedback;
+});
+
+// Password match checker
+document.getElementById('confirmPassword').addEventListener('input', function() {
+    const password = document.getElementById('password').value;
+    const confirmPassword = this.value;
+    const matchIndicator = document.getElementById('passwordMatch');
+
+    if (confirmPassword.length === 0) {
+        matchIndicator.textContent = '';
+        return;
+    }
+
+    if (password === confirmPassword) {
+        matchIndicator.textContent = 'Passwords match';
+        matchIndicator.className = 'form-text text-success';
+    } else {
+        matchIndicator.textContent = 'Passwords do not match';
+        matchIndicator.className = 'form-text text-danger';
+    }
+});
+
+// Username availability check
+document.getElementById('username').addEventListener('blur', function() {
+    const username = this.value;
+    const usernameError = document.getElementById('usernameError');
+
+    if (username.length === 0) return;
+
+    const users = JSON.parse(localStorage.getItem('mpsu_users')) || [];
+    const userExists = users.some(user => user.username === username);
+
+    if (userExists) {
+        usernameError.style.display = 'block';
+    } else {
+        usernameError.style.display = 'none';
+    }
+});
+
+// Email availability check
+document.getElementById('email').addEventListener('blur', function() {
+    const email = this.value;
+    const emailError = document.getElementById('emailError');
+
+    if (email.length === 0) return;
+
+    const users = JSON.parse(localStorage.getItem('mpsu_users')) || [];
+    const emailExists = users.some(user => user.email === email);
+
+    if (emailExists) {
+        emailError.style.display = 'block';
+    } else {
+        emailError.style.display = 'none';
+    }
+});
+
+// Step navigation
+document.getElementById('nextStep1').addEventListener('click', function() {
+    // Validate step 1
+    if (!selectedRole) {
+        showNotification('Please select your role', 'error');
+        return;
+    }
+
+    // Proceed to next step
+    goToStep(2);
+});
+
+document.getElementById('prevStep2').addEventListener('click', function() {
+    goToStep(1);
+});
+
+document.getElementById('nextStep2').addEventListener('click', function() {
+    // Validate step 2
+    const username = document.getElementById('username').value;
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
+
+    if (!username || !email || !password || !confirmPassword) {
+        showNotification('Please fill in all required fields', 'error');
+        return;
+    }
+
+    if (password !== confirmPassword) {
+        showNotification('Passwords do not match', 'error');
+        return;
+    }
+
+    // Check if username already exists
+    const users = JSON.parse(localStorage.getItem('mpsu_users')) || [];
+    if (users.some(user => user.username === username)) {
+        showNotification('Username already exists', 'error');
+        return;
+    }
+
+    // Check if email already exists
+    if (users.some(user => user.email === email)) {
+        showNotification('Email already registered', 'error');
+        return;
+    }
+
+    // Proceed to next step
+    toggleRoleSpecificFields();
+    goToStep(3);
+});
+
+document.getElementById('prevStep3').addEventListener('click', function() {
+    goToStep(2);
+});
+
+// Form submission
+document.getElementById('registerForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    // Validate step 3
+    const firstName = document.getElementById('firstName').value;
+    const lastName = document.getElementById('lastName').value;
+    const agreeTerms = document.getElementById('agreeTerms').checked;
+
+    if (!firstName || !lastName || !agreeTerms) {
+        showNotification('Please fill in all required fields and agree to terms', 'error');
+        return;
+    }
+
+    // Role-specific validation
+    if (selectedRole === 'student') {
+        const studentId = document.getElementById('studentId').value;
+        const course = document.getElementById('course').value;
+        const year = document.getElementById('year').value;
+
+        if (!studentId || !course || !year) {
+            showNotification('Please fill in all student information', 'error');
+            return;
+        }
+    } else {
+        const employeeId = document.getElementById('employeeId').value;
+        const department = document.getElementById('department').value;
+
+        if (!employeeId || !department) {
+            showNotification('Please fill in all administrator information', 'error');
+            return;
+        }
+    }
+
+    // Get all form data
+    const userData = {
+        username: document.getElementById('username').value,
+        email: document.getElementById('email').value,
+        password: document.getElementById('password').value,
+        firstName: document.getElementById('firstName').value,
+        lastName: document.getElementById('lastName').value,
+        phone: document.getElementById('phone').value,
+        role: selectedRole,
+        name: document.getElementById('firstName').value + ' ' + document.getElementById('lastName').value
+    };
+
+    // Add role-specific data
+    if (selectedRole === 'student') {
+        userData.studentId = document.getElementById('studentId').value;
+        userData.course = document.getElementById('course').value;
+        userData.year = document.getElementById('year').value;
+        userData.section = document.getElementById('section').value;
+    } else {
+        userData.employeeId = document.getElementById('employeeId').value;
+        userData.department = document.getElementById('department').value;
+    }
+
+    // Save user to localStorage
+    const users = JSON.parse(localStorage.getItem('mpsu_users')) || [];
+    users.push(userData);
+    localStorage.setItem('mpsu_users', JSON.stringify(users));
+
+    // Set redirect URL based on role
+    const redirectUrl = selectedRole === 'student' ? 'student-dashboard.html' : 'teacher-dashboard.html';
+
+    // Update success message
+    document.getElementById('successMessage').textContent =
+        `You will be redirected to the ${selectedRole === 'student' ? 'student' : 'faculty'} dashboard.`;
+
+    // Show success modal
+    const successModal = new bootstrap.Modal(document.getElementById('successModal'));
+    successModal.show();
+
+    // Store user data for auto-login
+    localStorage.setItem('mpsu_current_user', JSON.stringify(userData));
+});
+
+// Go to login page or dashboard based on role
+document.getElementById('goToLogin').addEventListener('click', function() {
+    const currentUser = JSON.parse(localStorage.getItem('mpsu_current_user'));
+    if (currentUser) {
+        // Auto-login and redirect to appropriate dashboard
+        const redirectUrl = currentUser.role === 'student' ? 'student-dashboard.html' : 'teacher-dashboard.html';
+        window.location.href = redirectUrl;
+    } else {
+        window.location.href = 'login.html';
+    }
+});
+
+// Step navigation function
+function goToStep(step) {
+    // Hide current step
+    document.getElementById(`step${currentStep}`).classList.remove('active');
+    document.getElementById(`step${currentStep}-indicator`).classList.remove('active');
+
+    // Show new step
+    document.getElementById(`step${step}`).classList.add('active');
+    document.getElementById(`step${step}-indicator`).classList.add('active');
+
+    currentStep = step;
+}
+
+// Notification function
+function showNotification(message, type = "success") {
+    const n = document.createElement("div");
+    n.className = `notification ${type}`;
+    n.innerHTML = `<span>${message}</span>`;
+    document.body.appendChild(n);
+
+    setTimeout(() => n.classList.add("show"), 100);
+    setTimeout(() => n.classList.remove("show"), 3000);
+    setTimeout(() => n.remove(), 3500);
+}
+
+// Initialize demo users if not exists (for testing)
+function initializeDemoUsers() {
+    const users = JSON.parse(localStorage.getItem('mpsu_users')) || [];
+
+    // Add demo users if they don't exist
+    const demoUsers = [
+        {
+            username: 'admin',
+            password: 'admin123',
+            role: 'admin',
+            name: 'System Administrator',
+            email: 'admin@mpsu.edu.ph',
+            employeeId: 'A001',
+            department: 'Administration'
+        },
+        {
+            username: 'teach001',
+            password: 'teacher123',
+            role: 'admin',
+            name: 'Dr. Jane Smith',
+            email: 'jane.smith@mpsu.edu.ph',
+            employeeId: 'T001',
+            department: 'College of Information Technology'
+        },
+        {
+            username: 'stud001',
+            password: 'student123',
+            role: 'student',
+            name: 'John Doe',
+            email: 'john.doe@mpsu.edu.ph',
+            studentId: '2024001',
+            course: 'BS Information Technology',
+            year: '3rd Year',
+            section: 'A',
+            firstName: 'John',
+            lastName: 'Doe'
+        }
+    ];
+
+    let needsUpdate = false;
+    demoUsers.forEach(demoUser => {
+        if (!users.find(u => u.username === demoUser.username)) {
+            users.push(demoUser);
+            needsUpdate = true;
+        }
+    });
+
+    if (needsUpdate) {
+        localStorage.setItem('mpsu_users', JSON.stringify(users));
+    }
+}
+
+// Initialize demo users when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    initializeDemoUsers();
+});
+</script>
+
+</body>
+</html>

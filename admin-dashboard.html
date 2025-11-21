@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MPSU SIS - Admin Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="body-home">
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <img src="mpsu.png" alt="MPSU Logo" class="navbar-logo me-2">MPSU SIS - Admin
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#dashboard" onclick="showSection('dashboard')">
+                            <i class="fas fa-tachometer-alt me-1"></i>Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#students" onclick="showSection('students')">
+                            <i class="fas fa-graduation-cap me-1"></i>Students
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#teachers" onclick="showSection('teachers')">
+                            <i class="fas fa-chalkboard-teacher me-1"></i>Teachers
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#courses" onclick="showSection('courses')">
+                            <i class="fas fa-book me-1"></i>Courses
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#fees" onclick="showSection('fees')">
+                            <i class="fas fa-money-bill me-1"></i>Fees
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#settings" onclick="showSection('settings')">
+                            <i class="fas fa-cog me-1"></i>Settings
+                        </a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-user me-1"></i><span id="adminName">Admin</span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#" onclick="showProfileModal()"><i class="fas fa-user me-2"></i>Profile</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#" id="logoutBtn"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container-fluid" style="margin-top: 80px;">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-2 sidebar">
+                <div class="p-3">
+                    <h6 class="neon-text mb-3">Quick Actions</h6>
+                    <button class="btn btn-outline-primary btn-sm w-100 mb-2" onclick="showAddStudentModal()">
+                        <i class="fas fa-plus me-1"></i>Add Student
+                    </button>
+                    <button class="btn btn-outline-primary btn-sm w-100 mb-2" onclick="showAddTeacherModal()">
+                        <i class="fas fa-plus me-1"></i>Add Teacher
+                    </button>
+                    <button class="btn btn-outline-primary btn-sm w-100 mb-2" onclick="showAddCourseModal()">
+                        <i class="fas fa-plus me-1"></i>Add Course
+                    </button>
+                    <button class="btn btn-outline-primary btn-sm w-100 mb-3" onclick="exportData()">
+                        <i class="fas fa-download me-1"></i>Export Data
+                    </button>
+                    <div class="border-top pt-3">
+                        <h6 class="neon-text mb-2">System Info</h6>
+                        <small class="text-muted">
+                            <i class="fas fa-users me-1"></i><span id="totalStudents">0</span> Students<br>
+                            <i class="fas fa-chalkboard-teacher me-1"></i><span id="totalTeachers">0</span> Teachers<br>
+                            <i class="fas fa-book me-1"></i><span id="totalCourses">0</span> Courses
+                        </small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content Area -->
+            <div class="col-md-10">
+                <!-- Dashboard Section -->
+                <div id="dashboard-section" class="content-section">
+                    <div class="dashboard-header">
+                        <h2><i class="fas fa-tachometer-alt me-2"></i>Admin Dashboard</h2>
+                        <p class="mb-0">Welcome back, Administrator! Here's an overview of your system.</p>
+                    </div>
+
+                    <!-- Statistics Cards -->
+                    <div class="row mb-4">
+                        <div class="col-md-3 mb-3">
+                            <div class="card stats-card">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-graduation-cap feature-icon"></i>
+                                    <div class="stats-number" id="studentsCount">0</div>
+                                    <div class="stats-label">Total Students</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="card stats-card">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-chalkboard-teacher feature-icon"></i>
+                                    <div class="stats-number" id="teachersCount">0</div>
+                                    <div class="stats-label">Total Teachers</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="card stats-card">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-book feature-icon"></i>
+                                    <div class="stats-number" id="coursesCount">0</div>
+                                    <div class="stats-label">Active Courses</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="card stats-card">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-money-bill feature-icon"></i>
+                                    <div class="stats-number" id="revenueCount">₱0</div>
+                                    <div class="stats-label">Total Revenue</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Activities -->
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card dashboard-card">
+                                <div class="card-header">
+                                    <h5 class="mb-0 neon-text"><i class="fas fa-clock me-2"></i>Recent Activities</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div id="recentActivities">
+                                        <p class="text-muted">No recent activities</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card dashboard-card">
+                                <div class="card-header">
+                                    <h5 class="mb-0 neon-text"><i class="fas fa-chart-line me-2"></i>System Status</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <small class="text-muted">Database Status</small>
+                                        <div class="progress">
+                                            <div class="progress-bar bg-success" style="width: 100%">Online</div>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <small class="text-muted">Server Status</small>
+                                        <div class="progress">
+                                            <div class="progress-bar bg-success" style="width: 100%">Running</div>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <small class="text-muted">Backup Status</small>
+                                        <div class="progress">
+                                            <div class="progress-bar bg-warning" style="width: 75%">Last backup: 2 hours ago</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Students Section -->
+                <div id="students-section" class="content-section" style="display: none;">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h2><i class="fas fa-graduation-cap me-2"></i>Student Management</h2>
+                        <button class="btn btn-primary" onclick="showAddStudentModal()">
+                            <i class="fas fa-plus me-2"></i>Add New Student
+                        </button>
+                    </div>
+
+                    <!-- Search and Filter -->
+                    <div class="card dashboard-card mb-4">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <input type="text" class="form-control" id="studentSearch" placeholder="Search students...">
+                                </div>
+                                <div class="col-md-3">
+                                    <select class="form-select" id="studentCourseFilter">
+                                        <option value="">All Courses</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-2">
+                                    <select class="form-select" id="studentYearFilter">
+                                        <option value="">All Years</option>
+                                        <option value="1st Year">1st Year</option>
+                                        <option value="2nd Year">2nd Year</option>
+                                        <option value="3rd Year">3rd Year</option>
+                                        <option value="4th Year">4th Year</option>
+                                        <option value="5th Year">5th Year</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <button class="btn btn-outline-primary me-2" onclick="filterStudents()">
+                                        <i class="fas fa-filter me-1"></i>Filter
+                                    </button>
+                                    <button class="btn btn-outline-secondary" onclick="clearStudentFilters()">
+                                        <i class="fas fa-times me-1"></i>Clear
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Students Table -->
+                    <div class="card dashboard-card">
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-hover" id="studentsTable">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Name</th>
+                                            <th>Email</th>
+                                            <th>Course</th>
+                                            <th>Year</th>
+                                            <th>Section</th>
+                                            <th>Status</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="studentsTableBody">
+                                        <!-- Students will be loaded here -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Teachers Section -->
+                <div id="teachers-section" class="content-section" style="display: none;">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h2><i class="fas fa-chalkboard-teacher me-2"></i>Teacher Management</h2>
+                        <button class="btn btn-primary" onclick="showAddTeacherModal()">
+                            <i class="fas fa-plus me-2"></i>Add New Teacher
+                        </button>
+                    </div>
+
+                    <!-- Teachers Table -->
+                    <div class="card dashboard-card">
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-hover" id="teachersTable">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Name</th>
+                                            <th>Email</th>
+                                            <th>Department</th>
+                                            <th>Subjects</th>
+                                            <th>Status</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="teachersTableBody">
+                                        <!-- Teachers will be loaded here -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Courses Section -->
+                <div id="courses-section" class="content-section" style="display: none;">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h2><i class="fas fa-book me-2"></i>Course Management</h2>
+                        <button class="btn btn-primary" onclick="showAddCourseModal()">
+                            <i class="fas fa-plus me-2"></i>Add New Course
+                        </button>
+                    </div>
+
+                    <!-- Courses Table -->
+                    <div class="card dashboard-card">
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-hover" id="coursesTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Code</th>
+                                            <th>Name</th>
+                                            <th>Teacher</th>
+                                            <th>Schedule</th>
+                                            <th>Room</th>
+                                            <th>Students</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="coursesTableBody">
+                                        <!-- Courses will be loaded here -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Fees Section -->
+                <div id="fees-section" class="content-section" style="display: none;">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h2><i class="fas fa-money-bill me-2"></i>Fee Management</h2>
+                        <button class="btn btn-primary" onclick="generateFeeReport()">
+                            <i class="fas fa-file-pdf me-2"></i>Generate Report
+                        </button>
+                    </div>
+
+                    <!-- Fee Summary -->
+                    <div class="row mb-4">
+                        <div class="col-md-3">
+                            <div class="card stats-card">
+                                <div class="card-body text-center">
+                                    <div class="stats-number" id="totalFees">₱0</div>
+                                    <div class="stats-label">Total Collected</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card stats-card">
+                                <div class="card-body text-center">
+                                    <div class="stats-number" id="pendingFees">₱0</div>
+                                    <div class="stats-label">Pending</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card stats-card">
+                                <div class="card-body text-center">
+                                    <div class="stats-number" id="overdueFees">₱0</div>
+                                    <div class="stats-label">Overdue</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card stats-card">
+                                <div class="card-body text-center">
+                                    <div class="stats-number" id="paidStudents">0</div>
+                                    <div class="stats-label">Paid Students</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Fees Table -->
+                    <div class="card dashboard-card">
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-hover" id="feesTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Student ID</th>
+                                            <th>Name</th>
+                                            <th>Semester</th>
+                                            <th>Total Amount</th>
+                                            <th>Paid</th>
+                                            <th>Balance</th>
+                                            <th>Status</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="feesTableBody">
+                                        <!-- Fees will be loaded here -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Settings Section -->
+                <div id="settings-section" class="content-section" style="display: none;">
+                    <div class="dashboard-header mb-4">
+                        <h2><i class="fas fa-cog me-2"></i>System Settings</h2>
+                        <p class="mb-0">Configure system preferences and settings.</p>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card dashboard-card">
+                                <div class="card-header">
+                                    <h5 class="mb-0 neon-text">General Settings</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <label class="form-label">School Name</label>
+                                        <input type="text" class="form-control" id="schoolName" value="Mountain Province State University">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">School Address</label>
+                                        <textarea class="form-control" id="schoolAddress" rows="3">Bontoc, Mountain Province, Philippines</textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Current Academic Year</label>
+                                        <input type="text" class="form-control" id="academicYear" value="2024-2025">
+                                    </div>
+                                    <button class="btn btn-primary" onclick="saveGeneralSettings()">
+                                        <i class="fas fa-save me-2"></i>Save Settings
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card dashboard-card">
+                                <div class="card-header">
+                                    <h5 class="mb-0 neon-text">Fee Structure</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <label class="form-label">Tuition Fee (per unit)</label>
+                                        <input type="number" class="form-control" id="tuitionFee" value="1200">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Miscellaneous Fee</label>
+                                        <input type="number" class="form-control" id="miscFee" value="2000">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Laboratory Fee</label>
+                                        <input type="number" class="form-control" id="labFee" value="1500">
+                                    </div>
+                                    <button class="btn btn-primary" onclick="saveFeeSettings()">
+                                        <i class="fas fa-save me-2"></i>Update Fees
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card dashboard-card mt-4">
+                        <div class="card-header">
+                            <h5 class="mb-0 neon-text">System Maintenance</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <button class="btn btn-warning w-100 mb-2" onclick="backupData()">
+                                        <i class="fas fa-download me-2"></i>Backup Data
+                                    </button>
+                                </div>
+                                <div class="col-md-4">
+                                    <button class="btn btn-danger w-100 mb-2" onclick="clearAllData()">
+                                        <i class="fas fa-trash me-2"></i>Clear All Data
+                                    </button>
+                                </div>
+                                <div class="col-md-4">
+                                    <button class="btn btn-info w-100 mb-2" onclick="resetToDefaults()">
+                                        <i class="fas fa-undo me-2"></i>Reset to Defaults
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <!-- Add Student Modal -->
+    <div class="modal fade" id="addStudentModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title neon-text">Add New Student</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addStudentForm">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">First Name</label>
+                                <input type="text" class="form-control" id="studentFirstName" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Last Name</label>
+                                <input type="text" class="form-control" id="studentLastName" required>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Email</label>
+                            <input type="email" class="form-control" id="studentEmail" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Student ID</label>
+                            <input type="text" class="form-control" id="studentId" required>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Course</label>
+                                <select class="form-select" id="studentCourse" required>
+                                    <option value="">Select Course</option>
+                                    <option value="BS Information Technology">BS Information Technology</option>
+                                    <option value="BS Computer Science">BS Computer Science</option>
+                                    <option value="BS Business Administration">BS Business Administration</option>
+                                    <option value="BS Accountancy">BS Accountancy</option>
+                                    <option value="BS Nursing">BS Nursing</option>
+                                    <option value="BS Education">BS Education</option>
+                                    <option value="BS Criminology">BS Criminology</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label class="form-label">Year</label>
+                                <select class="form-select" id="studentYear" required>
+                                    <option value="">Year</option>
+                                    <option value="1st Year">1st Year</option>
+                                    <option value="2nd Year">2nd Year</option>
+                                    <option value="3rd Year">3rd Year</option>
+                                    <option value="4th Year">4th Year</option>
+                                    <option value="5th Year">5th Year</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label class="form-label">Section</label>
+                                <select class="form-select" id="studentSection" required>
+                                    <option value="">Section</option>
+                                    <option value="A">A</option>
+                                    <option value="B">B</option>
+                                    <option value="C">C</option>
+                                    <option value="D">D</option>
+                                </select>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="addStudent()">Add Student</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Teacher Modal -->
+    <div class="modal fade" id="addTeacherModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title neon-text">Add New Faculty</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addTeacherForm">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">First Name</label>
+                                <input type="text" class="form-control" id="teacherFirstName" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Last Name</label>
+                                <input type="text" class="form-control" id="teacherLastName" required>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Email</label>
+                            <input type="email" class="form-control" id="teacherEmail" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Department</label>
+                            <select class="form-select" id="teacherDepartment" required>
+                                <option value="">Select Department</option>
+                                <option value="College of Information Technology">College of Information Technology</option>
+                                <option value="College of Business">College of Business</option>
+                                <option value="College of Health Sciences">College of Health Sciences</option>
+                                <option value="College of Education">College of Education</option>
+                                <option value="College of Arts and Sciences">College of Arts and Sciences</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Specialization/Subjects</label>
+                            <input type="text" class="form-control" id="teacherSubjects" placeholder="e.g., Programming, Mathematics">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="addTeacher()">Add Teacher</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Course Modal -->
+    <div class="modal fade" id="addCourseModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title neon-text">Add New Course</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addCourseForm">
+                        <div class="mb-3">
+                            <label class="form-label">Course Code</label>
+                            <input type="text" class="form-control" id="courseCode" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Course Name</label>
+                            <input type="text" class="form-control" id="courseName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Teacher</label>
+                            <select class="form-select" id="courseTeacher" required>
+                                <option value="">Select Teacher</option>
+                            </select>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Schedule</label>
+                                <input type="text" class="form-control" id="courseSchedule" placeholder="e.g., MWF 9:00-10:30" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Room</label>
+                                <input type="text" class="form-control" id="courseRoom" placeholder="e.g., IT101" required>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Maximum Students</label>
+                            <input type="number" class="form-control" id="courseMaxStudents" value="50" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="addCourse()">Add Course</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Profile Modal -->
+    <div class="modal fade" id="profileModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title neon-text">Admin Profile</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="text-center mb-4">
+                        <i class="fas fa-user-shield fa-3x text-primary mb-3"></i>
+                        <h4 id="profileName">Administrator</h4>
+                        <p class="text-muted">System Administrator</p>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Username</label>
+                        <input type="text" class="form-control" id="profileUsername" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-control" id="profileEmail" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Role</label>
+                        <input type="text" class="form-control" value="Administrator" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Last Login</label>
+                        <input type="text" class="form-control" id="profileLastLogin" readonly>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/admin.js"></script>
+</body>
+</html>
